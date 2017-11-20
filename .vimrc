@@ -95,3 +95,26 @@ set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V
 colorscheme desert
 ""
 ""let g:indent_guides_enable_on_vim_startup = 1
+
+"NeoBundleインストール"
+set nocompatible
+filetype plugin indent off
+
+if has('vim_starting')
+  set runtimepath+=~/.vim/bundle/neobundle.vim
+  call neobundle#begin(expand('~/.vim/bundle'))
+endif
+
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+"------ここにプラグインを追加------
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neosnippet.vim'
+
+"----------------------------------
+
+call neobundle#end()
+
+filetype plugin indent on
+
+
