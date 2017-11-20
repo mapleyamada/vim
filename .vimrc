@@ -31,8 +31,15 @@ set laststatus=2
 set showmatch
 "コマンドラインの補完
 set wildmenu wildmode=list:longest,full
-"ビープ音を可視化
-set visualbell
+"ビープ音を無効
+set visualbell t_vb=
+"エラーメッセージの表示時にビープ音を鳴らさない
+set noerrorbells
+"上下8行の視界を確保
+set scrolloff=8
+"左右スクロール時のの視界を確保
+set sidescrolloff=16
+
 
 inoremap { {}<ESC>i
 inoremap ( ()<ESC>i
@@ -88,5 +95,3 @@ set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V
 colorscheme desert
 ""
 ""let g:indent_guides_enable_on_vim_startup = 1
-
-
