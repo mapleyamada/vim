@@ -81,8 +81,10 @@ set hlsearch
 
 "マウス操作を設定
 set mouse=a
+"ヤンクをクリップボードに保存
+set clipboard+=unnamed
 
-"
+
 set whichwrap=b,s,h,l,<,>,[,]
 "ファイルのパスをタイトルに表示
 set title
@@ -110,11 +112,16 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 "------ここにプラグインを追加------
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neosnippet.vim'
+"ディレクトリをツリー表示
+NeoBundle 'scrooloose/nerdtree'
+"end補完
+NeoBundle 'tpope/vim-endwise'
+"複数行コメント
+NeoBundle 'tomtom/tcomment_vim'
+
 
 "----------------------------------
 
 call neobundle#end()
 
 filetype plugin indent on
-
-
