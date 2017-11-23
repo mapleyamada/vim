@@ -1,5 +1,9 @@
+"ファイル読み込み時の文字コードを指定
+set enc=utf-8
 "文字コードをutf-8に設定
 set fenc=utf-8
+"□や○文字が崩れる問題を解決
+set ambiwidth=double
 "バックアップファイルを作らない
 set nobackup
 "スワップファイルを作らない
@@ -11,13 +15,13 @@ set hidden
 "入力中のコマンドをステータスに表示する
 set showcmd
 "シンタックスハイライトをON
-syntax on
+syntax enable
 "きれいにコピペができる
 "set paste
 
 "tabを>-、半角スペースを.で表示する
-set list
-set listchars=tab:>-,trail:.
+""set list
+""set listchars=tab:>-,trail:.
 
 "行番号を表示
 set number
@@ -49,21 +53,25 @@ inoremap ` ``<ESC>i
 inoremap [ []<ESC>i
 "ハイライトを削除
 nmap <ESC><ESC> :nohlsearch<CR><ESC>
+nnoremap j gj
+nnoremap k gk
+nnoremap <down> gj
+nnoremap <up> gk
 "inoremap {<ENTER> {}<LEFT><CR><ESC><S-o>
 "inoremap (<ENTER> ()<LEFT><CR><ESC><S-o>
-
+set backspace=indent,eol,start
 
 "tab系
 "行頭TAB文字の表示幅
-set tabstop=2
+set tabstop=4
 "連続した空白に対してタブキーやバックスペースでカーソルが移動する幅
-set softtabstop=2
+set softtabstop=4
 "自動インデントでずれる幅
-set shiftwidth=2
+set shiftwidth=4
 "TAB文字を半角スペースにする
 set expandtab
 ""自動的にインデントする
-set smartindent
+set cindent
 
 "検索系
 "検索文字列が小文字の場合は大文字小文字を区別なく検索する
@@ -80,7 +88,7 @@ set hlsearch
 
 
 "マウス操作を設定
-set mouse=a
+"set mouse=a
 "ヤンクをクリップボードに保存
 set clipboard+=unnamed
 
@@ -98,13 +106,40 @@ colorscheme desert
 ""
 ""let g:indent_guides_enable_on_vim_startup = 1
 
-"NeoBundleインストール"
-set nocompatible
+"ペースト設定"
+if &term =~ "xterm"
+    let &t_SI .= "\e[?2004h"
+    let &t_EI .= "\e[?2004l"
+    let &pastetoggle = "\e[201~"
+
+    function XTermPasteBegin(ret)
+        set paste
+        return a:ret
+    endfunction
+
+    inoremap <special> <expr> <Esc>[200~ XTermPasteBegin("")
+endif
+
+"マウスの有効化
+if has('mouse')
+    set mouse=a
+    if has('mouse_sgr')
+        set ttymouse=sgr
+    elseif v:version > 703 || v:version is 703 && has('patch632')
+        set ttymouse=sgr
+    else
+        set ttymouse=xterm2
+    endif
+endif
+
+
+"------------NeoBundleインストール--------------
+
 filetype plugin indent off
 
 if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim
-  call neobundle#begin(expand('~/.vim/bundle'))
+    set runtimepath+=~/.vim/bundle/neobundle.vim
+    call neobundle#begin(expand('~/.vim/bundle'))
 endif
 
 NeoBundleFetch 'Shougo/neobundle.vim'
@@ -118,6 +153,16 @@ NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'tpope/vim-endwise'
 "複数行コメント
 NeoBundle 'tomtom/tcomment_vim'
+"ステータスラインを強化
+NeoBundle 'itchyny/lightline.vim'
+"全角半角空白を表示
+NeoBundle 'bronson/vim-trailing-whitespace'
+"インデントの可視化
+NeoBundle 'Yggdroot/indentLine'
+
+"カラースキーマ
+NeoBundle 'jacoborus/tender.vim'
+NeoBundle 'tomasr/molokai'
 
 
 "----------------------------------
@@ -125,3 +170,10 @@ NeoBundle 'tomtom/tcomment_vim'
 call neobundle#end()
 
 filetype plugin indent on
+
+"カラースキーマを設定
+colorscheme molokai
+set t_Co=256
+
+
+
