@@ -57,7 +57,7 @@ nnoremap j gj
 nnoremap k gk
 nnoremap <down> gj
 nnoremap <up> gk
-"inoremap {<ENTER> {}<LEFT><CR><ESC><S-o>
+inoremap {<ENTER> {}<LEFT><CR><ESC><S-o>
 "inoremap (<ENTER> ()<LEFT><CR><ESC><S-o>
 set backspace=indent,eol,start
 
@@ -102,7 +102,7 @@ set ruler
 set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 
 ""set background=dark
-colorscheme desert
+"colorscheme desert
 ""
 ""let g:indent_guides_enable_on_vim_startup = 1
 
@@ -155,6 +155,9 @@ NeoBundle 'tpope/vim-endwise'
 NeoBundle 'tomtom/tcomment_vim'
 "ステータスラインを強化
 NeoBundle 'itchyny/lightline.vim'
+"NeoBundle 'vim-airline/vim-airline'
+"NeoBundle 'vim-airline/vim-airline-themes'
+
 "全角半角空白を表示
 NeoBundle 'bronson/vim-trailing-whitespace'
 "インデントの可視化
@@ -174,6 +177,4 @@ filetype plugin indent on
 "カラースキーマを設定
 colorscheme molokai
 set t_Co=256
-
-
 
