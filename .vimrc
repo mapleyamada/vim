@@ -1,3 +1,162 @@
+"""""""""""""""""""""""""""
+"dein.vim
+"""""""""""""""""""""""""""
+if &compatible
+ set nocompatible
+endif
+" Add the dein installation directory into runtimepath
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+let s:dein_dir = expand('~/.cache/dein')
+
+if dein#load_state(s:dein_dir)
+call dein#begin(s:dein_dir)
+
+call dein#load_toml(s:dein_dir . '/plugins.toml', {'lazy': 0})
+call dein#add('Shougo/deoplete.nvim')
+if !has('nvim')
+  call dein#add('roxma/nvim-yarp')
+  call dein#add('roxma/vim-hug-neovim-rpc')
+endif
+
+call dein#end()
+call dein#save_state()
+endif
+
+if dein#check_install()
+ call dein#install()
+endif
+
+filetype plugin indent on
+syntax enable
+
+"colorschemeの設定
+"set t_Co=256
+" set background=dark
+"colorscheme molokai
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   起動時実行
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+augroup start
+augroup end
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Plugins
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"airlineの設定
+colorscheme solarized
+let g:airline_solarized_bg='dark'
+let g:solarized_termcolors=256
+" set guifont=Roboto_Mono_for_Powerline:h14
+set laststatus=2
+" let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#whitespace#mixed_indent_algo = 1
+let g:airline_theme='luna'
+
+let g:indent_guides_enable_on_vim_startup = 0
+let g:indent_guides_auto_colors = 0
+" 奇数インデントのカラー
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626 ctermbg=gray
+" 偶数インデントのカラー
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c ctermbg=darkgray
+
+"python用の設定
+autocmd FileType python set sw=4
+autocmd FileType python set ts=4
+autocmd FileType python set sts=4
+
+"Syntasticの設定
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_python_checkers = ["flake8"]
+"django推奨設定
+let g:last_relative_dir = ''
+nnoremap \1 :call RelatedFile ("models.py")<cr>
+nnoremap \2 :call RelatedFile ("views.py")<cr>
+nnoremap \3 :call RelatedFile ("urls.py")<cr>
+nnoremap \4 :call RelatedFile ("admin.py")<cr>
+nnoremap \5 :call RelatedFile ("tests.py")<cr>
+nnoremap \6 :call RelatedFile ( "templates/" )<cr>
+nnoremap \7 :call RelatedFile ( "templatetags/" )<cr>
+nnoremap \8 :call RelatedFile ( "management/" )<cr>
+nnoremap \0 :e settings.py<cr>
+nnoremap \9 :e urls.py<cr>
+
+fun! RelatedFile(file)
+    #This is to check that the directory looks djangoish
+    if filereadable(expand("%:h"). '/models.py') || isdirectory(expand("%:h") . "/templatetags/")
+        exec "edit %:h/" . a:file
+        let g:last_relative_dir = expand("%:h") . '/'
+        return ''
+    endif
+    if g:last_relative_dir != ''
+        exec "edit " . g:last_relative_dir . a:file
+        return ''
+    endif
+    echo "Cant determine where relative file is : " . a:file
+    return ''
+endfun
+
+fun SetAppDir()
+    if filereadable(expand("%:h"). '/models.py') || isdirectory(expand("%:h") . "/templatetags/")
+        let g:last_relative_dir = expand("%:h") . '/'
+        return ''
+    endif
+endfun
+autocmd BufEnter *.py call SetAppDir()
+
+"YouCompleteMe用の設定
+let g:ycm_keep_logfiles = 1
+let g:ycm_log_level = 'debug'
+let g:ycm_global_ycm_extra_conf = '$USER/.cache/dein/repos/github.com/valloric/youcompleteme/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+"django推奨設定
+let g:ycm_collect_identifiers_from_tags_files = 1 " Let YCM read tags from Ctags file
+let g:ycm_use_ultisnips_completer = 1 " Default 1, just ensure
+let g:ycm_seed_identifiers_with_syntax = 1 " Completion for programming language's keyword
+let g:ycm_complete_in_comments = 1 " Completion in comments
+let g:ycm_complete_in_strings = 1 " Completion in string
+
+"Ultisnips.vim用の設定
+let g:UltiSnipsExpandTrigger       = "<c-j>"
+let g:UltiSnipsJumpForwardTrigger  = "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<c-p>"
+let g:UltiSnipsListSnippets        = "<c-k>" "List possible snippets based on current file
+
+"Surround用の設定
+let b:surround_{char2nr("v")} = "{{ \r }}"
+let b:surround_{char2nr("{")} = "{{ \r }}"
+let b:surround_{char2nr("%")} = "{% \r %}"
+let b:surround_{char2nr("b")} = "{% block \1block name: \1 %}\r{% endblock \1\1 %}"
+let b:surround_{char2nr("i")} = "{% if \1condition: \1 %}\r{% endif %}"
+let b:surround_{char2nr("w")} = "{% with \1with: \1 %}\r{% endwith %}"
+let b:surround_{char2nr("f")} = "{% for \1for loop: \1 %}\r{% endfor %}"
+let b:surround_{char2nr("c")} = "{% comment %}\r{% endcomment %}"
+
+"NERDCommenterの設定
+let g:NERDSpaceDelims=1
+
+"NERDTreeの設定
+let NERDTreeShowHidden = 1
+
+"flak8の設定
+
+
+"行番号を表示
+set number
+"クリップボードの共有
+set clipboard=unnamed,autoselect
 "ファイル読み込み時の文字コードを指定
 set enc=utf-8
 "文字コードをutf-8に設定
@@ -14,14 +173,6 @@ set autoread
 set hidden
 "入力中のコマンドをステータスに表示する
 set showcmd
-"シンタックスハイライトをON
-syntax enable
-"きれいにコピペができる
-"set paste
-
-"tabを>-、半角スペースを.で表示する
-""set list
-""set listchars=tab:>-,trail:.
 
 "行番号を表示
 set number
@@ -44,32 +195,32 @@ set scrolloff=8
 "左右スクロール時のの視界を確保
 set sidescrolloff=16
 
-
-inoremap { {}<ESC>i
-inoremap ( ()<ESC>i
-inoremap " ""<ESC>i
-inoremap ' ''<ESC>i
-inoremap ` ``<ESC>i
-inoremap [ []<ESC>i
+"inoremap { {}<ESC>i
+"inoremap ( ()<ESC>i
+"inoremap " ""<ESC>i
+"inoremap ' ''<ESC>i
+"inoremap ` ``<ESC>i
+"inoremap [ []<ESC>i
 "ハイライトを削除
+nmap <F8> :TagbarToggle<CR>
 nmap <ESC><ESC> :nohlsearch<CR><ESC>
 nnoremap j gj
 nnoremap k gk
 nnoremap <down> gj
 nnoremap <up> gk
-inoremap {<ENTER> {}<LEFT><CR><ESC><S-o>
+"inoremap {<ENTER> {}<LEFT><CR><ESC><S-o>
 "inoremap (<ENTER> ()<LEFT><CR><ESC><S-o>
 set backspace=indent,eol,start
 
 "tab系
+"TAB文字を半角スペースにする
+set expandtab
 "行頭TAB文字の表示幅
 set tabstop=4
 "連続した空白に対してタブキーやバックスペースでカーソルが移動する幅
 set softtabstop=4
 "自動インデントでずれる幅
 set shiftwidth=4
-"TAB文字を半角スペースにする
-set expandtab
 ""自動的にインデントする
 set cindent
 
@@ -84,41 +235,12 @@ set incsearch
 set wrapscan
 "検索語をハイライト表示
 set hlsearch
-"カーソルが行の端で止まらない
-
-
-"マウス操作を設定
-"set mouse=a
-"ヤンクをクリップボードに保存
-set clipboard+=unnamed
-
 
 set whichwrap=b,s,h,l,<,>,[,]
 "ファイルのパスをタイトルに表示
 set title
 " カーソルが何行目の何列目に置かれているかを表示する
 set ruler
-" ステータス行に表示させる情報の指定(どこからかコピペしたので細かい意味はわかっていない)
-set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
-
-""set background=dark
-"colorscheme desert
-""
-""let g:indent_guides_enable_on_vim_startup = 1
-
-"ペースト設定"
-if &term =~ "xterm"
-    let &t_SI .= "\e[?2004h"
-    let &t_EI .= "\e[?2004l"
-    let &pastetoggle = "\e[201~"
-
-    function XTermPasteBegin(ret)
-        set paste
-        return a:ret
-    endfunction
-
-    inoremap <special> <expr> <Esc>[200~ XTermPasteBegin("")
-endif
 
 "マウスの有効化
 if has('mouse')
@@ -131,50 +253,3 @@ if has('mouse')
         set ttymouse=xterm2
     endif
 endif
-
-
-"------------NeoBundleインストール--------------
-
-filetype plugin indent off
-
-if has('vim_starting')
-    set runtimepath+=~/.vim/bundle/neobundle.vim
-    call neobundle#begin(expand('~/.vim/bundle'))
-endif
-
-NeoBundleFetch 'Shougo/neobundle.vim'
-
-"------ここにプラグインを追加------
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/neosnippet.vim'
-"ディレクトリをツリー表示
-NeoBundle 'scrooloose/nerdtree'
-"end補完
-NeoBundle 'tpope/vim-endwise'
-"複数行コメント
-NeoBundle 'tomtom/tcomment_vim'
-"ステータスラインを強化
-NeoBundle 'itchyny/lightline.vim'
-"NeoBundle 'vim-airline/vim-airline'
-"NeoBundle 'vim-airline/vim-airline-themes'
-
-"全角半角空白を表示
-NeoBundle 'bronson/vim-trailing-whitespace'
-"インデントの可視化
-NeoBundle 'Yggdroot/indentLine'
-
-"カラースキーマ
-NeoBundle 'jacoborus/tender.vim'
-NeoBundle 'tomasr/molokai'
-
-
-"----------------------------------
-
-call neobundle#end()
-
-filetype plugin indent on
-
-"カラースキーマを設定
-colorscheme molokai
-set t_Co=256
-
