@@ -72,6 +72,11 @@ autocmd FileType python set sw=4
 autocmd FileType python set ts=4
 autocmd FileType python set sts=4
 
+"ruby用の設定
+autocmd FileType ruby set sw=2
+autocmd FileType ruby set ts=2
+autocmd FileType ruby set sts=2
+
 "Syntasticの設定
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
